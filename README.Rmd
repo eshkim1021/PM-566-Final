@@ -1,0 +1,28 @@
+---
+title: "PM 566 Midterm Assignment"
+author: "Edy Kim"
+date: "10/3/2020"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r, include = FALSE}
+library(tidyverse)
+library(httr)
+```
+
+
+## Introduction
+  
+ The United States has the highest amount of deaths due to COVID-19 compared to the rest of the international community. Data regarding Provisional COVID-19 Death Count by Sex, Age, and State was taken from the Centers for Disease Control database. 
+
+
+
+The COVID-19 data for the US was taken.Need to determine 
+
+```{r}
+covid_data <- read_csv("covid_death_data.csv")
+```
