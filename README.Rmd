@@ -12,17 +12,68 @@ knitr::opts_chunk$set(echo = TRUE)
 ```{r, include = FALSE}
 library(tidyverse)
 library(httr)
+library(dplyr)
 ```
 
 
 ## Introduction
   
- The United States has the highest amount of deaths due to COVID-19 compared to the rest of the international community. Data regarding Provisional COVID-19 Death Count by Sex, Age, and State was taken from the Centers for Disease Control database. 
 
-
-
-The COVID-19 data for the US was taken.Need to determine 
 
 ```{r}
-covid_data <- read_csv("covid_death_data.csv")
+data <- GET(
+  url = "https://data.cdc.gov",
+  path = "/resource/aie4-agrk.json"
+  
+)
+data <- content(data)
+dat <- as.character(data)
+```
+
+
+```{r}
+#Extract year of death
+year <- str_extract_all(dat,"date_of_death_year = \"[0-9]+\"")
+year <- str_remove_all(year,"date_of_death_year = \"|\"")
+
+#Extract month of death 
+month <- str_extract_all(dat,"date_of_death_month = \"[0-9]+\"")
+month <- str_remove_all(month,"date_of_death_month = \"|\"")
+
+#Extract region of death 
+region <- str_extract_all(dat, "region = \"[:alpha:]+\"")
+region <- str_remove_all(region, "region = \"|\"")
+
+#Extract age group 
+age_group <- str_extract_all(dat, "agegroup = \"[0-9]+-[0-9]+ [:alpha:]+")
+age_group <-str_remove_all(age_group, "agegroup = \"")
+
+#Extract Race and Ethnicity 
+race <- str_extract_all(dat, "raceethnicity = \"([a-zA-Z]+-?)\"")
+race <- str_remove_all(race, "raceethnicity = \"|\"")
+
+#Extract mutliple causes 
+causes <- str_extract_all(dat, "covid_19_u071_multiple_cause = \"[0-9]+\"")
+causes <- str_remove_all(causes, "covid_19_u071_multiple_cause = \"|\"")
+```
+
+```{r}
+#Create and clean up COVID-19 death data frame 
+database <- data.frame(
+  Month = month,
+  Region = region,
+  Age_Group = age_group,
+  Race = race,
+  Multiple_Cause = causes
+)
+
+database %>% count(Month)
+
+database <- database %>% mutate(Month= case_when(Month == 2 ~ "February",
+                                              Month == 3 ~ "March",
+                                              Month == 4 ~ "April",
+                                              Month == 5 ~ "May")
+                                )
+
+knitr::kable(database)
 ```
