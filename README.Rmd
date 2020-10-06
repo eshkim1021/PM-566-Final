@@ -90,6 +90,59 @@ database %>% count(Gender)
 
 knitr::kable(database)
 ```
-```{r}
+
+### Looking at Age, Gender, and State 
+
+The data was cleaned and analyzed to make sure that there was no errors in the data 
+
+```{r,include = FALSE}
 #Group by independent variables. 
+q1 <- data.frame(
+  Gender = gender,
+  State = state,
+  Age_Group = age_group,
+  Covid_Deaths = covid
+)
+q1 <- q1 %>% mutate(Covid_Deaths = as.numeric(Covid_Deaths))
+
+q1 %>% count(Covid_Deaths)
+
+q1 %>% group_by(Age_Group,Covid_Deaths) %>% summarise()
 ```
+
+
+```{r Create Table for Age and COVID-19 Death,message = TRUE}
+Age<- q1 %>%
+  filter(!(Covid_Deaths %in% NA)) %>% 
+  filter(!(Age_Group %in% "All Ages"))%>%
+  group_by(Age_Group) %>% 
+  summarise_at(vars(Covid_Deaths), list(Covid_Deaths=sum))
+knitr::kable(Age)  
+```
+
+```{r Create Table for State and COVID-19 Death}
+state_death <- q1 %>% 
+  filter(!(Covid_Deaths %in% NA)) %>% 
+  filter(!(State %in% "United"))%>% 
+  group_by(State)%>%
+  summarise_at(vars(Covid_Deaths),list("Covid Death"= sum))
+
+knitr::kable(state_death)
+```
+
+```{r Create Table for Gender and COVID-19 Death}
+gender_death <- q1 %>% 
+  filter(!(Covid_Deaths %in% NA)) %>%
+  filter(!(Gender %in% "All Sexes")) %>% 
+  filter(!(Gender %in% "Unknown")) %>% 
+  group_by(Gender)%>%
+  summarise_at(vars(Covid_Deaths), list("Covid Death" = sum))
+
+knitr::kable(gender_death)
+````
+### Looking at COVID-19 Deaths and Pneumonia Deaths 
+
+
+## Preliminary Results 
+
+## Conclusion 

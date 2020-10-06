@@ -379,7 +379,218 @@ summary {
 <div id="methods" class="section level2">
 <h2>Methods</h2>
 <p>The dataset, <strong>“Provisional COVID-19 Death Count by Sex, Age, and State”</strong> (<a href="https://data.cdc.gov/resource/9bhg-hcku.json" class="uri">https://data.cdc.gov/resource/9bhg-hcku.json</a>), was accessed from the <strong>Center for Disease Control</strong> website through an API.</p>
-<pre class="r"><code>#Group by independent variables. </code></pre>
+<div id="looking-at-age-gender-and-state" class="section level3">
+<h3>Looking at Age, Gender, and State</h3>
+<p>The data was cleaned and analyzed to make sure that there was no errors in the data</p>
+<pre class="r"><code>Age&lt;- q1 %&gt;%
+  filter(!(Covid_Deaths %in% NA)) %&gt;% 
+  filter(!(Age_Group %in% &quot;All Ages&quot;))%&gt;%
+  group_by(Age_Group) %&gt;% 
+  summarise_at(vars(Covid_Deaths), list(Covid_Deaths=sum))
+knitr::kable(Age)  </code></pre>
+<table>
+<thead>
+<tr class="header">
+<th align="left">Age_Group</th>
+<th align="right">Covid_Deaths</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">0-17 years</td>
+<td align="right">190</td>
+</tr>
+<tr class="even">
+<td align="left">1-4 years</td>
+<td align="right">30</td>
+</tr>
+<tr class="odd">
+<td align="left">15-24 years</td>
+<td align="right">821</td>
+</tr>
+<tr class="even">
+<td align="left">18-29 years</td>
+<td align="right">2040</td>
+</tr>
+<tr class="odd">
+<td align="left">25-34 years</td>
+<td align="right">3563</td>
+</tr>
+<tr class="even">
+<td align="left">30-49 years</td>
+<td align="right">21468</td>
+</tr>
+<tr class="odd">
+<td align="left">35-44 years</td>
+<td align="right">9426</td>
+</tr>
+<tr class="even">
+<td align="left">45-54 years</td>
+<td align="right">24667</td>
+</tr>
+<tr class="odd">
+<td align="left">5-14 years</td>
+<td align="right">64</td>
+</tr>
+<tr class="even">
+<td align="left">50-64 years</td>
+<td align="right">73857</td>
+</tr>
+<tr class="odd">
+<td align="left">55-64 years</td>
+<td align="right">58814</td>
+</tr>
+<tr class="even">
+<td align="left">65-74 years</td>
+<td align="right">99517</td>
+</tr>
+<tr class="odd">
+<td align="left">75-84 years</td>
+<td align="right">121989</td>
+</tr>
+<tr class="even">
+<td align="left">85 years and over</td>
+<td align="right">141337</td>
+</tr>
+<tr class="odd">
+<td align="left">Under 1 year</td>
+<td align="right">40</td>
+</tr>
+</tbody>
+</table>
+<pre class="r"><code>state_death &lt;- q1 %&gt;% 
+  filter(!(Covid_Deaths %in% NA)) %&gt;% 
+  filter(!(State %in% &quot;United&quot;))%&gt;% 
+  group_by(State)%&gt;%
+  summarise_at(vars(Covid_Deaths),list(&quot;Covid Death&quot;= sum))
+
+knitr::kable(state_death)</code></pre>
+<table>
+<thead>
+<tr class="header">
+<th align="left">State</th>
+<th align="right">Covid Death</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">Alabama</td>
+<td align="right">10550</td>
+</tr>
+<tr class="even">
+<td align="left">Alaska</td>
+<td align="right">94</td>
+</tr>
+<tr class="odd">
+<td align="left">Arizona</td>
+<td align="right">16386</td>
+</tr>
+<tr class="even">
+<td align="left">Arkansas</td>
+<td align="right">3763</td>
+</tr>
+<tr class="odd">
+<td align="left">California</td>
+<td align="right">48890</td>
+</tr>
+<tr class="even">
+<td align="left">Colorado</td>
+<td align="right">6172</td>
+</tr>
+<tr class="odd">
+<td align="left">Connecticut</td>
+<td align="right">13719</td>
+</tr>
+<tr class="even">
+<td align="left">Delaware</td>
+<td align="right">1759</td>
+</tr>
+<tr class="odd">
+<td align="left">District</td>
+<td align="right">2489</td>
+</tr>
+<tr class="even">
+<td align="left">Florida</td>
+<td align="right">45663</td>
+</tr>
+<tr class="odd">
+<td align="left">Georgia</td>
+<td align="right">19142</td>
+</tr>
+<tr class="even">
+<td align="left">Hawaii</td>
+<td align="right">454</td>
+</tr>
+<tr class="odd">
+<td align="left">Idaho</td>
+<td align="right">1434</td>
+</tr>
+<tr class="even">
+<td align="left">Illinois</td>
+<td align="right">25060</td>
+</tr>
+<tr class="odd">
+<td align="left">Indiana</td>
+<td align="right">11197</td>
+</tr>
+<tr class="even">
+<td align="left">Iowa</td>
+<td align="right">4139</td>
+</tr>
+<tr class="odd">
+<td align="left">Kansas</td>
+<td align="right">2235</td>
+</tr>
+<tr class="even">
+<td align="left">Kentucky</td>
+<td align="right">3798</td>
+</tr>
+<tr class="odd">
+<td align="left">Louisiana</td>
+<td align="right">15345</td>
+</tr>
+<tr class="even">
+<td align="left">Maine</td>
+<td align="right">234</td>
+</tr>
+</tbody>
+</table>
+<pre class="r"><code>gender_death &lt;- q1 %&gt;% 
+  filter(!(Covid_Deaths %in% NA)) %&gt;%
+  filter(!(Gender %in% &quot;All Sexes&quot;)) %&gt;% 
+  filter(!(Gender %in% &quot;Unknown&quot;)) %&gt;% 
+  group_by(Gender)%&gt;%
+  summarise_at(vars(Covid_Deaths), list(&quot;Covid Death&quot; = sum))
+
+knitr::kable(gender_death)</code></pre>
+<table>
+<thead>
+<tr class="header">
+<th align="left">Gender</th>
+<th align="right">Covid Death</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">Female</td>
+<td align="right">263399</td>
+</tr>
+<tr class="even">
+<td align="left">Male</td>
+<td align="right">325814</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div id="looking-at-covid-19-deaths-and-pneumonia-deaths" class="section level3">
+<h3>Looking at COVID-19 Deaths and Pneumonia Deaths</h3>
+</div>
+</div>
+<div id="preliminary-results" class="section level2">
+<h2>Preliminary Results</h2>
+</div>
+<div id="conclusion" class="section level2">
+<h2>Conclusion</h2>
 </div>
 
 
