@@ -9,7 +9,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
 
 
-<meta name="author" content="Edy Kim" />
+<meta name="author" content="Edward Kim" />
 
 
 <title>PM 566 Midterm Assignment</title>
@@ -363,7 +363,7 @@ summary {
 
 
 <h1 class="title toc-ignore">PM 566 Midterm Assignment</h1>
-<h4 class="author">Edy Kim</h4>
+<h4 class="author">Edward Kim</h4>
 <h4 class="date">10/3/2020</h4>
 
 </div>
@@ -371,23 +371,20 @@ summary {
 
 <div id="introduction" class="section level2">
 <h2>Introduction</h2>
-<p>The COVID-19 pandemic still heavily impacts the United States, with the US surpassing over 200,000 deaths since cases have first been recorded. To shed further insight into the severity of the panemic, the <strong>“Provisional COVID-19 Death Count by Sex, Age, and State”</strong> (<a href="https://data.cdc.gov/resource/9bhg-hcku.json" class="uri">https://data.cdc.gov/resource/9bhg-hcku.json</a>) data was taken from the <strong>Center for Disease Control</strong> and analyzed. The data includes the number of COCIVD-19 deaths between February 2020 and August 2020 that was reported to the <strong>National Center for Health Statistics</strong> by sex, age group, and state. In addition, the number of deaths due to pneumonia, often caused by severe COVID symptoms, was also included in the data set. The data set was accessed on 10/6/2020, and reflects the current statistics at the time.</p>
+<p>The COVID-19 pandemic still heavily impacts the United States, with the US surpassing over 200,000 deaths since cases have first been recorded. To shed further insight into the severity of the panemic, the <strong>“Provisional COVID-19 Death Count by Sex, Age, and State”</strong> (<a href="https://data.cdc.gov/resource/9bhg-hcku.json" class="uri">https://data.cdc.gov/resource/9bhg-hcku.json</a>) data was taken from the <strong>Center for Disease Control</strong> and analyzed. The data includes the number of COCIVD-19 deaths between February 2020 and August 2020 that was reported to the <strong>National Center for Health Statistics</strong> by sex, age group, and state. In addition, the number of deaths due to pneumonia, often caused by severe COVID symptoms, was also included in the data set. Data gathered by this data set is incomplete due to the length of time in which it takes for a death certificate to be completed and submitted to the NCHS after death. In addition, not all states are represented in this data.</p>
 <p>The main purpose of this project is to analyze:</p>
 <p>1)The effect of <strong>age</strong>, <strong>gender</strong>, and <strong>geographical location</strong> on the COVID-19 mortality rate.</p>
-<p>2)The frequency of <strong>pneumonia</strong> in COVID-19 patients, and its affect on patiant mortality.</p>
+<p>2)The frequency of <strong>pneumonia</strong> in COVID-19 patients, and its affect on patient mortality.</p>
 </div>
 <div id="methods" class="section level2">
 <h2>Methods</h2>
-<p>The dataset, <strong>“Provisional COVID-19 Death Count by Sex, Age, and State”</strong> (<a href="https://data.cdc.gov/resource/9bhg-hcku.json" class="uri">https://data.cdc.gov/resource/9bhg-hcku.json</a>), was accessed from the <strong>Center for Disease Control</strong> website through an API.</p>
-<div id="looking-at-age-gender-and-state" class="section level3">
-<h3>Looking at Age, Gender, and State</h3>
-<p>The data was cleaned and analyzed to make sure that there was no errors in the data</p>
-<pre class="r"><code>Age&lt;- q1 %&gt;%
-  filter(!(Covid_Deaths %in% NA)) %&gt;% 
-  filter(!(Age_Group %in% &quot;All Ages&quot;))%&gt;%
-  group_by(Age_Group) %&gt;% 
-  summarise_at(vars(Covid_Deaths), list(Covid_Deaths=sum))
-knitr::kable(Age)  </code></pre>
+<p>The dataset, <strong>“Provisional COVID-19 Death Count by Sex, Age, and State”</strong> (<a href="https://data.cdc.gov/resource/9bhg-hcku.json" class="uri">https://data.cdc.gov/resource/9bhg-hcku.json</a>), was accessed from the <strong>Center for Disease Control</strong> website through an API. Once downloaded, the desired information was extracted through regular expressions and formed into a data table. The key independent variables that were examined in this study were <strong>age</strong>, <strong>gender</strong>, <strong>state</strong>, while the data of interest included number of <strong>deaths from COVID-19</strong>, number of <strong>deaths from pneumonia</strong>, and the number of deaths which both <strong>COVID-19 and pneumonia</strong> were involved.</p>
+<div id="looking-at-age-state-gender" class="section level3">
+<h3>Looking at Age, State, Gender:</h3>
+<div id="age" class="section level4">
+<h4>Age:</h4>
+<p>The age variable was separated into different age groups, including ranges from 0-17, 15-24, 18-29, etc. When the age group was extracted from the raw data, there were observations that did not include data regarding the age. Therefore, those observations were removed.</p>
+<p>In addition, there were also overlapping age-ranges in the data set. To prevent double-counting of deaths, the overlapping age-ranges were removed. The final age groups started from age 5 to age 84, broken down into increments of 10 years, as shown below:</p>
 <table>
 <thead>
 <tr class="header">
@@ -397,74 +394,43 @@ knitr::kable(Age)  </code></pre>
 </thead>
 <tbody>
 <tr class="odd">
-<td align="left">0-17 years</td>
-<td align="right">190</td>
+<td align="left">5-14 years</td>
+<td align="right">64</td>
 </tr>
 <tr class="even">
-<td align="left">1-4 years</td>
-<td align="right">30</td>
-</tr>
-<tr class="odd">
 <td align="left">15-24 years</td>
 <td align="right">821</td>
-</tr>
-<tr class="even">
-<td align="left">18-29 years</td>
-<td align="right">2040</td>
 </tr>
 <tr class="odd">
 <td align="left">25-34 years</td>
 <td align="right">3563</td>
 </tr>
 <tr class="even">
-<td align="left">30-49 years</td>
-<td align="right">21468</td>
-</tr>
-<tr class="odd">
 <td align="left">35-44 years</td>
 <td align="right">9426</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td align="left">45-54 years</td>
 <td align="right">24667</td>
 </tr>
-<tr class="odd">
-<td align="left">5-14 years</td>
-<td align="right">64</td>
-</tr>
 <tr class="even">
-<td align="left">50-64 years</td>
-<td align="right">73857</td>
-</tr>
-<tr class="odd">
 <td align="left">55-64 years</td>
 <td align="right">58814</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td align="left">65-74 years</td>
 <td align="right">99517</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td align="left">75-84 years</td>
 <td align="right">121989</td>
 </tr>
-<tr class="even">
-<td align="left">85 years and over</td>
-<td align="right">141337</td>
-</tr>
-<tr class="odd">
-<td align="left">Under 1 year</td>
-<td align="right">40</td>
-</tr>
 </tbody>
 </table>
-<pre class="r"><code>state_death &lt;- q1 %&gt;% 
-  filter(!(Covid_Deaths %in% NA)) %&gt;% 
-  filter(!(State %in% &quot;United&quot;))%&gt;% 
-  group_by(State)%&gt;%
-  summarise_at(vars(Covid_Deaths),list(&quot;Covid Death&quot;= sum))
-
-knitr::kable(state_death)</code></pre>
+</div>
+<div id="state" class="section level4">
+<h4>State:</h4>
+<p>Covid-19 data from only 20 states were reported in this data set. In addition, some observations listed the location of death as the “United States.” Because the goal of this project is to determine the influence of location (state) on COVID-19 mortality, these values were removed from the final data set. Missing values were also removed.</p>
 <table>
 <thead>
 <tr class="header">
@@ -555,14 +521,10 @@ knitr::kable(state_death)</code></pre>
 </tr>
 </tbody>
 </table>
-<pre class="r"><code>gender_death &lt;- q1 %&gt;% 
-  filter(!(Covid_Deaths %in% NA)) %&gt;%
-  filter(!(Gender %in% &quot;All Sexes&quot;)) %&gt;% 
-  filter(!(Gender %in% &quot;Unknown&quot;)) %&gt;% 
-  group_by(Gender)%&gt;%
-  summarise_at(vars(Covid_Deaths), list(&quot;Covid Death&quot; = sum))
-
-knitr::kable(gender_death)</code></pre>
+</div>
+<div id="gender" class="section level4">
+<h4>Gender:</h4>
+<p>The number of deaths due to COVID-19 was separated by gender. Some observation listed the gender as “All Genders.” Because the goal of this project is to determine the influence of gender on COVID-19 mortality, these values were removed. In addition, removing those values would prevent double-counting of the data. Cases where the gender was unknown were also removed.</p>
 <table>
 <thead>
 <tr class="header">
@@ -582,8 +544,78 @@ knitr::kable(gender_death)</code></pre>
 </tbody>
 </table>
 </div>
-<div id="looking-at-covid-19-deaths-and-pneumonia-deaths" class="section level3">
-<h3>Looking at COVID-19 Deaths and Pneumonia Deaths</h3>
+</div>
+<div id="looking-at-covid-19-deaths-and-pneumonia-deaths-by-age" class="section level3">
+<h3>Looking at COVID-19 Deaths and Pneumonia Deaths by Age</h3>
+<table>
+<thead>
+<tr class="header">
+<th align="left"></th>
+<th align="left">Age_Group</th>
+<th align="right">Covid_Deaths</th>
+<th align="right">Pneumonia_Deaths</th>
+<th align="right">Covid_and_Pneumonia_Deaths</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">5</td>
+<td align="left">5-14 years</td>
+<td align="right">64</td>
+<td align="right">212</td>
+<td align="right">16</td>
+</tr>
+<tr class="even">
+<td align="left">1</td>
+<td align="left">15-24 years</td>
+<td align="right">821</td>
+<td align="right">1017</td>
+<td align="right">273</td>
+</tr>
+<tr class="odd">
+<td align="left">2</td>
+<td align="left">25-34 years</td>
+<td align="right">3563</td>
+<td align="right">3982</td>
+<td align="right">1585</td>
+</tr>
+<tr class="even">
+<td align="left">3</td>
+<td align="left">35-44 years</td>
+<td align="right">9426</td>
+<td align="right">9099</td>
+<td align="right">4226</td>
+</tr>
+<tr class="odd">
+<td align="left">4</td>
+<td align="left">45-54 years</td>
+<td align="right">24667</td>
+<td align="right">23489</td>
+<td align="right">11679</td>
+</tr>
+<tr class="even">
+<td align="left">6</td>
+<td align="left">55-64 years</td>
+<td align="right">58814</td>
+<td align="right">62746</td>
+<td align="right">29016</td>
+</tr>
+<tr class="odd">
+<td align="left">7</td>
+<td align="left">65-74 years</td>
+<td align="right">99517</td>
+<td align="right">106170</td>
+<td align="right">48861</td>
+</tr>
+<tr class="even">
+<td align="left">8</td>
+<td align="left">75-84 years</td>
+<td align="right">121989</td>
+<td align="right">130184</td>
+<td align="right">57553</td>
+</tr>
+</tbody>
+</table>
 </div>
 </div>
 <div id="preliminary-results" class="section level2">
