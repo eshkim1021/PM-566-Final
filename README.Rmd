@@ -13,6 +13,7 @@ knitr::opts_chunk$set(echo = TRUE)
 library(tidyverse)
 library(httr)
 library(dplyr)
+library(ggplot2)
 ```
 
 
@@ -215,5 +216,15 @@ knitr::kable(q2)
 
 
 ## Preliminary Results 
+
+```{r Create Figure for Age and COVID-19 Death, echo = FALSE}
+Age %>% 
+  filter(!(Age_Group %in% "5-14 years")) %>%
+  ggplot(mapping = aes(x = Age_Group, y = Covid_Deaths))+
+  geom_col()+
+  labs(title = "Number of COVID-19 Deaths by Age Group in the United States,
+February to August 2020")
+
+```
 
 ## Conclusion 
