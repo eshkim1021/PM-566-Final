@@ -378,13 +378,13 @@ summary {
 </div>
 <div id="methods" class="section level2">
 <h2><strong>Methods</strong></h2>
-<p>The dataset, <strong>“Provisional COVID-19 Death Count by Sex, Age, and State”</strong> (<a href="https://data.cdc.gov/resource/9bhg-hcku.json" class="uri">https://data.cdc.gov/resource/9bhg-hcku.json</a>), was accessed from the <strong>Center for Disease Control</strong> website through an API. Once downloaded, the desired information was extracted through regular expressions and formed into a data table. The key independent variables that were examined in this study were <strong>age</strong>, <strong>gender</strong>, <strong>state</strong>, while the data of interest included number of <strong>deaths from COVID-19</strong>, number of <strong>deaths from pneumonia</strong>, and the number of deaths which both <strong>COVID-19 and pneumonia</strong> were involved.</p>
+<p>The dataset, <strong>“Provisional COVID-19 Death Count by Sex, Age, and State”</strong> (<a href="https://data.cdc.gov/resource/9bhg-hcku.json" class="uri">https://data.cdc.gov/resource/9bhg-hcku.json</a>), was accessed from the <strong>Center for Disease Control</strong> website through an API. Once downloaded, the desired information was extracted through regular expressions and formed into a data table. The key independent variables that were examined in this study were <strong>age</strong> and <strong>gender</strong> while the data of interest included number of <strong>deaths from COVID-19</strong>, number of <strong>deaths from pneumonia</strong>, and the number of deaths which both <strong>COVID-19 and pneumonia</strong> were involved.</p>
 <div id="examining-age-and-gender" class="section level3">
 <h3><strong>Examining Age and Gender</strong>:</h3>
 <div id="age" class="section level4">
 <h4><strong>Age</strong>:</h4>
 <p>The age variable was separated into different age groups, including ranges from 0-17, 15-24, 18-29, etc. When the age group was extracted from the raw data, there were observations that did not include data regarding the age. Therefore, those observations were removed.</p>
-<p>In addition, there were also overlapping age-ranges in the data set. To prevent double-counting of deaths, the overlapping age-ranges were removed. The final age groups started from age 5 to age 84, broken down into increments of 10 years, as shown below:</p>
+<p>In addition, there were also overlapping age-ranges in the data set. To prevent double-counting of deaths, the overlapping age-ranges were removed. The final age groups started from age 5 to age 84, broken down into increments of 10 years (5-14,15-24,26-35, etc.)</p>
 <p>To ensure the accuracy of the data cleaning process, the number of Covid-19 deaths per age composition was added to determine if it was equal to the total number of Covid-19 deaths reported across all age groups.</p>
 </div>
 <div id="gender" class="section level4">
@@ -395,7 +395,7 @@ summary {
 </div>
 <div id="examining-the-covid-19-deaths-and-pneumonia-deaths-by-age" class="section level3">
 <h3><strong>Examining the COVID-19 Deaths and Pneumonia Deaths by Age</strong>:</h3>
-<p>The number of COVID-19 Deaths, Pneumonia Deaths, and deaths involving both Covid-19 and Pneumonia, were all organized by age group. The same age range was included the initial analysis of age group and Covid-19 mortality. Data in which the gender not known, as well as overlapping age categories were excluded from this analysis. The numbers from the resulting analysis may be incopmlete due to missing data and lag in the reporting of deaths due to all three conditions.</p>
+<p>The number of COVID-19 Deaths, Pneumonia Deaths, and deaths involving both Covid-19 and Pneumonia, were all organized by age group. The same age range was included the initial analysis of age group and Covid-19 mortality. Data in which the gender not known, as well as overlapping age categories were excluded from this analysis. The numbers from the resulting analysis may be incomplete due to missing data and lag in the reporting of deaths due to all three conditions.</p>
 <p>All of the preliminary tables and figures were made through knitrr and ggplot2.</p>
 </div>
 </div>
@@ -550,7 +550,7 @@ summary {
 </div>
 <div id="conclusion" class="section level2">
 <h2><strong>Conclusion</strong>:</h2>
-<p>In conclusion, the number of deaths due to Covid-19 is influenced by age and gender. It was found that the number of deaths due to Covid-19 increase with age, with there being the most deaths from individuals in between the ages of 75-84. There was a greater number of Covid-19 deaths in males than females. Also, pneumonia was prsent in around 50% of the deaths due to Covid-19, with that percentage staying relatively similar throughout all the age groups.</p>
+<p>In conclusion, the number of deaths due to Covid-19 is influenced by age and gender. It was found that the number of deaths due to Covid-19 increase with age, with there being the most deaths from individuals in between the ages of 75-84. There was a greater number of Covid-19 deaths in males than females. Also, pneumonia was prsent in around 50% of the deaths due to Covid-19, with that percentage staying relatively similar throughout all the age groups. Although pneumonia is found in around half of Covid-19 cases, there is not enough information in this data set to determine if a co-diagnosis of pneumonia lead to an increase in mortality rate from Covid-19.</p>
 </div>
 
 
