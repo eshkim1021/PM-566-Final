@@ -1,0 +1,417 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+<meta charset="utf-8" />
+<meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+
+
+<meta name="author" content="Edward Kim" />
+
+
+<title>PM 566 Midterm Assignment</title>
+
+<script src="site_libs/jquery-1.11.3/jquery.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="site_libs/bootstrap-3.3.5/css/bootstrap.min.css" rel="stylesheet" />
+<script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/respond.min.js"></script>
+<script src="site_libs/navigation-1.1/tabsets.js"></script>
+<link href="site_libs/highlightjs-9.12.0/default.css" rel="stylesheet" />
+<script src="site_libs/highlightjs-9.12.0/highlight.js"></script>
+
+<style type="text/css">code{white-space: pre;}</style>
+<style type="text/css">
+  pre:not([class]) {
+    background-color: white;
+  }
+</style>
+<script type="text/javascript">
+if (window.hljs) {
+  hljs.configure({languages: []});
+  hljs.initHighlightingOnLoad();
+  if (document.readyState && document.readyState === "complete") {
+    window.setTimeout(function() { hljs.initHighlighting(); }, 0);
+  }
+}
+</script>
+
+
+
+<style type="text/css">
+h1 {
+  font-size: 34px;
+}
+h1.title {
+  font-size: 38px;
+}
+h2 {
+  font-size: 30px;
+}
+h3 {
+  font-size: 24px;
+}
+h4 {
+  font-size: 18px;
+}
+h5 {
+  font-size: 16px;
+}
+h6 {
+  font-size: 12px;
+}
+.table th:not([align]) {
+  text-align: left;
+}
+</style>
+
+
+
+
+<style type = "text/css">
+.main-container {
+  max-width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+}
+code {
+  color: inherit;
+  background-color: rgba(0, 0, 0, 0.04);
+}
+img {
+  max-width:100%;
+}
+.tabbed-pane {
+  padding-top: 12px;
+}
+.html-widget {
+  margin-bottom: 20px;
+}
+button.code-folding-btn:focus {
+  outline: none;
+}
+summary {
+  display: list-item;
+}
+</style>
+
+
+
+<!-- tabsets -->
+
+<style type="text/css">
+.tabset-dropdown > .nav-tabs {
+  display: inline-table;
+  max-height: 500px;
+  min-height: 44px;
+  overflow-y: auto;
+  background: white;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.tabset-dropdown > .nav-tabs > li.active:before {
+  content: "";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li.active:before {
+  content: "&#xe258;";
+  border: none;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open:before {
+  content: "";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs > li.active {
+  display: block;
+}
+
+.tabset-dropdown > .nav-tabs > li > a,
+.tabset-dropdown > .nav-tabs > li > a:focus,
+.tabset-dropdown > .nav-tabs > li > a:hover {
+  border: none;
+  display: inline-block;
+  border-radius: 4px;
+  background-color: transparent;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li {
+  display: block;
+  float: none;
+}
+
+.tabset-dropdown > .nav-tabs > li {
+  display: none;
+}
+</style>
+
+<!-- code folding -->
+
+
+
+
+</head>
+
+<body>
+
+
+<div class="container-fluid main-container">
+
+
+
+
+<div class="fluid-row" id="header">
+
+
+
+<h1 class="title toc-ignore">PM 566 Midterm Assignment</h1>
+<h4 class="author">Edward Kim</h4>
+<h4 class="date">10/3/2020</h4>
+
+</div>
+
+
+<div id="introduction" class="section level2">
+<h2><strong>Introduction</strong></h2>
+<p>The COVID-19 pandemic still heavily impacts the United States, with the US surpassing over 200,000 deaths since cases have first been recorded. To shed further insight into the severity of the panemic, the <strong>“Provisional COVID-19 Death Count by Sex, Age, and State”</strong> (<a href="https://data.cdc.gov/resource/9bhg-hcku.json" class="uri">https://data.cdc.gov/resource/9bhg-hcku.json</a>) data was taken from the <strong>Center for Disease Control</strong> and analyzed. The data includes the number of COCIVD-19 deaths between February 2020 and August 2020 that was reported to the <strong>National Center for Health Statistics</strong> by sex and age group. In addition, the number of deaths due in which pneumonia, often caused by severe COVID symptoms,was diagnosed alongside with Covid-19 was also included in the data set. Data gathered by this data set is incomplete due to the length of time in which it takes for a death certificate to be completed and submitted to the NCHS after death. Although location by State was also aviable, only 20 states were represented in this data set, leading to a lack of information to make a proper analysis.</p>
+<p>The main purpose of this project is to analyze:</p>
+<p>1)The effect of <strong>age</strong> and <strong>gender</strong> on the COVID-19 mortality rate.</p>
+<p>2)The frequency of <strong>pneumonia</strong> in COVID-19 patients, and its affect on patient mortality.</p>
+</div>
+<div id="methods" class="section level2">
+<h2><strong>Methods</strong></h2>
+<p>The dataset, <strong>“Provisional COVID-19 Death Count by Sex, Age, and State”</strong> (<a href="https://data.cdc.gov/resource/9bhg-hcku.json" class="uri">https://data.cdc.gov/resource/9bhg-hcku.json</a>), was accessed from the <strong>Center for Disease Control</strong> website through an API. Once downloaded, the desired information was extracted through regular expressions and formed into a data table. The key independent variables that were examined in this study were <strong>age</strong> and <strong>gender</strong> while the data of interest included number of <strong>deaths from COVID-19</strong>, number of <strong>deaths from pneumonia</strong>, and the number of deaths which both <strong>COVID-19 and pneumonia</strong> were involved.</p>
+<div id="examining-age-and-gender" class="section level3">
+<h3><strong>Examining Age and Gender</strong>:</h3>
+<div id="age" class="section level4">
+<h4><strong>Age</strong>:</h4>
+<p>The age variable was separated into different age groups, including ranges from 0-17, 15-24, 18-29, etc. When the age group was extracted from the raw data, there were observations that did not include data regarding the age. Therefore, those observations were removed.</p>
+<p>In addition, there were also overlapping age-ranges in the data set. To prevent double-counting of deaths, the overlapping age-ranges were removed. The final age groups started from age 5 to age 84, broken down into increments of 10 years (5-14,15-24,26-35, etc.)</p>
+<p>To ensure the accuracy of the data cleaning process, the number of Covid-19 deaths per age composition was added to determine if it was equal to the total number of Covid-19 deaths reported across all age groups.</p>
+</div>
+<div id="gender" class="section level4">
+<h4><strong>Gender</strong>:</h4>
+<p>The number of deaths due to COVID-19 was separated by gender. Some observation listed the gender as “All Genders.” Because the goal of this project is to determine the influence of gender on COVID-19 mortality, these values were removed. In addition, removing those values would prevent double-counting of the data. Cases where the gender was unknown were also removed.</p>
+<p>To ensure the accuracy of the data, the number of COVID-19 deaths for each gender was added to determine if it was equal to the total number of Covid-19 deaths reported throughout all genders.</p>
+</div>
+</div>
+<div id="examining-the-covid-19-deaths-and-pneumonia-deaths-by-age" class="section level3">
+<h3><strong>Examining the COVID-19 Deaths and Pneumonia Deaths by Age</strong>:</h3>
+<p>The number of COVID-19 Deaths, Pneumonia Deaths, and deaths involving both Covid-19 and Pneumonia, were all organized by age group. The same age range was included the initial analysis of age group and Covid-19 mortality. Data in which the gender not known, as well as overlapping age categories were excluded from this analysis. The numbers from the resulting analysis may be incomplete due to missing data and lag in the reporting of deaths due to all three conditions.</p>
+<p>All of the preliminary tables and figures were made through knitrr and ggplot2.</p>
+</div>
+</div>
+<div id="preliminary-results" class="section level2">
+<h2><strong>Preliminary Results</strong>:</h2>
+<p>The following table and figure analyze the relationship between age group and Covid-19 death:</p>
+<table>
+<thead>
+<tr class="header">
+<th align="left">Age_Group</th>
+<th align="right">Covid_Deaths</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">5-14 years</td>
+<td align="right">39</td>
+</tr>
+<tr class="even">
+<td align="left">15-24 years</td>
+<td align="right">400</td>
+</tr>
+<tr class="odd">
+<td align="left">25-34 years</td>
+<td align="right">1677</td>
+</tr>
+<tr class="even">
+<td align="left">35-44 years</td>
+<td align="right">4333</td>
+</tr>
+<tr class="odd">
+<td align="left">45-54 years</td>
+<td align="right">11474</td>
+</tr>
+<tr class="even">
+<td align="left">55-64 years</td>
+<td align="right">27569</td>
+</tr>
+<tr class="odd">
+<td align="left">65-74 years</td>
+<td align="right">46987</td>
+</tr>
+<tr class="even">
+<td align="left">75-84 years</td>
+<td align="right">57865</td>
+</tr>
+</tbody>
+</table>
+<p>The table above lists the number of Covid-19 deaths for each age group in the United States from February to August 2020. The numbers range from 35 deaths, for those between 5-14 years old, to 52,617 deaths, for those in between 75-84 years old.</p>
+<p><img src="index_files/figure-html/Create%20Figure%20for%20Age%20and%20COVID-19%20Death-1.png" width="672" /></p>
+<p><strong>Figure 1</strong> illustrates the number of Covid-19 deaths by age group in the United States from February to August 2020. The age group of 5-14 years was removed from the data set as the number of deaths due to Covid-19 was significantly less than the other age groups. There was 35 deaths from Covid-19 in the age group of 5-14, which comprised of &lt;0.025% of the total Covid-19 death.</p>
+<p>According to <strong>Figure 1</strong>, the number of deaths due to Covid-19 increased for every age group. The older the patient, the greater the Covid-19 mortality rate. The increase in the number of deaths was particular pronounced after the age of 55, as the number of deaths seems to increase exponentially for each increase in age group.</p>
+<p>The following table shows the difference in Covid-19 deaths by gender in the United States from February 2020 to August 2020. The number of deaths</p>
+<table>
+<thead>
+<tr class="header">
+<th align="left">Gender</th>
+<th align="right">Covid Death</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">Female</td>
+<td align="right">82692</td>
+</tr>
+<tr class="even">
+<td align="left">Male</td>
+<td align="right">125357</td>
+</tr>
+</tbody>
+</table>
+<p>The number of males that have died due to Covid-19 is 114,291, while the number of females that have died due to Covid-19 is 75,203. These numbers are different from the total number of Covid-19 deaths calculated from the Covid-19 due to age distribution because different observations were omitted depending on the unknown or repetitive variables for each category.</p>
+<p><img src="index_files/figure-html/Gender%20and%20COVID-19-1.png" width="672" /></p>
+<p><strong>Figure 2</strong> illustrates the difference in the number of Covid-19 deaths in the United States by gender from February to August 2020. The cases in which the gender was unknown were removed from this figure. According to the data, there have been more cases of males dying due to Covid-19 than females. The ratio of males to females that have died due to COVID-19 is 1.520, indicating that the number of males that have died from Covid-19 is 1.520 times greater than the number of females that have died.</p>
+<p><img src="index_files/figure-html/Figure%20of%20Covid-19%20Death%20by%20Age%20and%20Gender-1.png" width="672" /></p>
+<p><strong>Figure 3</strong> illustrates the number of Covid-19 deaths by age group and gender in the United States from February to August 2020. The gender distribution of the number of Covid-19 deaths for each age group mirrors that of the overall population of the United States. In each age group, the number of male deaths from Covid-19 are greater than that of females.</p>
+<p>The following table shows the number of deaths for each condition (Covid-19, Pneumonia, Covid and Pneumonia) by age group.</p>
+<table>
+<thead>
+<tr class="header">
+<th align="left"></th>
+<th align="left">Age_Group</th>
+<th align="right">Covid_Deaths</th>
+<th align="right">Pneumonia_Deaths</th>
+<th align="right">Covid_and_Pneumonia_Deaths</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">5</td>
+<td align="left">5-14 years</td>
+<td align="right">39</td>
+<td align="right">228</td>
+<td align="right">14</td>
+</tr>
+<tr class="even">
+<td align="left">1</td>
+<td align="left">15-24 years</td>
+<td align="right">400</td>
+<td align="right">1040</td>
+<td align="right">280</td>
+</tr>
+<tr class="odd">
+<td align="left">2</td>
+<td align="left">25-34 years</td>
+<td align="right">1677</td>
+<td align="right">3736</td>
+<td align="right">1484</td>
+</tr>
+<tr class="even">
+<td align="left">3</td>
+<td align="left">35-44 years</td>
+<td align="right">4333</td>
+<td align="right">8368</td>
+<td align="right">3842</td>
+</tr>
+<tr class="odd">
+<td align="left">4</td>
+<td align="left">45-54 years</td>
+<td align="right">11474</td>
+<td align="right">21876</td>
+<td align="right">10816</td>
+</tr>
+<tr class="even">
+<td align="left">6</td>
+<td align="left">55-64 years</td>
+<td align="right">27569</td>
+<td align="right">58568</td>
+<td align="right">27106</td>
+</tr>
+<tr class="odd">
+<td align="left">7</td>
+<td align="left">65-74 years</td>
+<td align="right">46987</td>
+<td align="right">99622</td>
+<td align="right">46058</td>
+</tr>
+<tr class="even">
+<td align="left">8</td>
+<td align="left">75-84 years</td>
+<td align="right">57865</td>
+<td align="right">122076</td>
+<td align="right">54378</td>
+</tr>
+</tbody>
+</table>
+<p>The number of deaths for each condition increased as the individual gets older, which is expected. The number of Covid deaths recorded does not include the number of deaths where both Covid-19 and pneumonia are found.</p>
+<p><img src="index_files/figure-html/Figure%20of%20Age%20with%20Pnemonia%20and%20COVID%20Death-1.png" width="672" /></p>
+<p><strong>Figure 4</strong> illustrates the number of deaths in which both Covid-19 and Pneumonia were involved. The number of cases with Covid-19 and pneumonia increase with age, and reaches the highest values at those between 75-84 years of age.</p>
+<p><img src="index_files/figure-html/Figure%20of%20Proportoinal%20Deaths%20by%20Covid-19-1.png" width="672" /></p>
+<p><strong>Figure 5</strong> illustrates the percentage of deaths in which both Covid-19 and Pneumonia were present compared to the total number of deaths due to Covid-19. Throughout most age groups, the percentage of deaths in which both Covid-19 and Pneumonia are present account for around 40-50% of the total Covid-19 deaths. It stays relatively consistent throughout the age groups.</p>
+</div>
+<div id="conclusion" class="section level2">
+<h2><strong>Conclusion</strong>:</h2>
+<p>In conclusion, the number of deaths due to Covid-19 is influenced by age and gender. It was found that the number of deaths due to Covid-19 increase with age, with there being the most deaths from individuals in between the ages of 75-84. There was a greater number of Covid-19 deaths in males than females. Also, pneumonia was prsent in around 50% of the deaths due to Covid-19, with that percentage staying relatively similar throughout all the age groups. Although pneumonia is found in around half of Covid-19 cases, there is not enough information in this data set to determine if a co-diagnosis of pneumonia lead to an increase in mortality rate from Covid-19.</p>
+</div>
+
+
+
+
+</div>
+
+<script>
+
+// add bootstrap table styles to pandoc tables
+function bootstrapStylePandocTables() {
+  $('tr.header').parent('thead').parent('table').addClass('table table-condensed');
+}
+$(document).ready(function () {
+  bootstrapStylePandocTables();
+});
+
+
+</script>
+
+<!-- tabsets -->
+
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+
+$(document).ready(function () {
+  $('.tabset-dropdown > .nav-tabs > li').click(function () {
+    $(this).parent().toggleClass('nav-tabs-open')
+  });
+});
+</script>
+
+<!-- code folding -->
+
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>
