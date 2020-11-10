@@ -10,6 +10,7 @@ library(tidyverse)
 library(httr)
 library(dplyr)
 library(ggplot2)
+library(plotly)
 ```
 
 
@@ -214,13 +215,17 @@ knitr::kable(Age)
 
 The table above lists the number of Covid-19 deaths for each age group in the United States from February to August 2020. The numbers range from 35 deaths, for those between 5-14 years old, to 52,617 deaths, for those in between 75-84 years old.
 
-```{r Create Figure for Age and COVID-19 Death, echo = FALSE}
-Age %>% 
+```{r Create Figure for Age and COVID-19 Death,include = FALSE}
+f1 <-Age %>% 
   filter(!(Age_Group %in% "5-14 years")) %>%
   ggplot(mapping = aes(x = Age_Group, y = Covid_Deaths))+
   geom_col()+
   labs(title = "Figure 1. Number of COVID-19 Deaths by Age Group in the United States,
 February 2020 to August 2020")
+```
+
+```{r, echo = FALSE}
+ggplotly(f1)
 ```
 
 
@@ -236,27 +241,34 @@ knitr::kable(gender_death)
 
 The number of males that have died due to Covid-19 is 114,291, while the number of females that have died due to Covid-19 is 75,203. These numbers are different from the total number of Covid-19 deaths calculated from the Covid-19 due to age distribution because different observations were omitted depending on the unknown or repetitive variables for each category. 
 
-```{r, Gender and COVID-19, echo = FALSE}
-gender_death %>% 
+```{r, Gender and COVID-19, include = FALSE}
+f2 <- gender_death %>% 
   ggplot(mapping = aes(x = Gender, y = `Covid Death`))+
   geom_col(width = 0.3)+
   labs(title = "Figure 2. Number of COVID-19 Deaths by Gender in the United States,
 February to August 2020")
+```
 
+```{r, echo = FALSE}
+ggplotly(f2)
 ```
 
 __Figure 2__ illustrates the difference in the number of Covid-19 deaths in the United States by gender from February to August 2020. The cases in which the gender was unknown were removed from this figure. According to the data, there have been more cases of males dying due to Covid-19 than females. The ratio of males to females that have died due to COVID-19 is 1.520, indicating that the number of males that have died from Covid-19 is 1.520 times greater than the number of females that have died. 
 
 
-```{r Figure of Covid-19 Death by Age and Gender, echo = FALSE, width = 1.5}
-q1 %>% 
+```{r Figure of Covid-19 Death by Age and Gender, include = FALSE}
+f3 <-q1 %>% 
   filter(!(Age_Group %in% "5-14 years")) %>%
   filter((State %in% "United")) %>%
-   filter(!(Gender %in% "All Sexes")) %>% 
+  filter(!(Gender %in% "All Sexes")) %>% 
   filter(!(Gender %in% "Unknown"))%>%
   ggplot(mapping = aes(x = Age_Group, y = Covid_Deaths, fill = Gender))+
   geom_col(position = "dodge",colour = "black")+
   labs(title = "Figure 3.COVID-19 Deaths in the United States by Age Group and Gender", x = "Age Group", y = "Number of Covid-19 Deaths")
+```
+
+```{r, echo = FALSE, width = 1.5}
+ggplotly(f3)
 ```
 
 __Figure 3__ illustrates the number of Covid-19 deaths by age group and gender in the United States from February to August 2020. The gender distribution of the number of Covid-19 deaths for each age group mirrors that of the overall population of the United States. In each age group, the number of male deaths from Covid-19 are greater than that of females. 
@@ -269,24 +281,33 @@ knitr::kable(q2)
 
 The number of deaths for each condition increased as the individual gets older, which is expected. The number of Covid deaths recorded does not include the number of deaths where both Covid-19 and pneumonia are found. 
 
-```{r Figure of Age with Pnemonia and COVID Death, echo= FALSE}
-q2 %>% 
+```{r Figure of Age with Pnemonia and COVID Death, include = FALSE}
+f4 <-q2 %>% 
   filter(!(Age_Group %in% "5-14 years")) %>% 
   ggplot(mapping = aes(x = Age_Group, y = Covid_and_Pneumonia_Deaths))+
   geom_col(color = "black")+
   labs(title = "Figure 4.Number of Deaths with Pneumonia and COVID-19", x = "Age Group", y = "Number of Covid-19 Deaths with Pneumonia")
 ```
 
+```{r, echo = FALSE}
+ggplotly(f4)
+```
+
+
 __Figure 4__ illustrates the number of deaths in which both Covid-19 and Pneumonia were involved. The number of cases with Covid-19 and pneumonia increase with age, and reaches the highest values at those between 75-84 years of age. 
 
-```{r Figure of Proportoinal Deaths by Covid-19, echo = FALSE}
+```{r Figure of Proportoinal Deaths by Covid-19, include = FALSE}
 q2 <- q2 %>% mutate(percent = Covid_and_Pneumonia_Deaths/(Covid_Deaths+Covid_and_Pneumonia_Deaths)*100)
-q2 %>% 
+f5 <- q2 %>% 
   filter(!(Age_Group %in% "5-14 years")) %>%
   filter(!(Covid_and_Pneumonia_Deaths %in% NA))%>%
   ggplot(mapping = aes(x = Age_Group,y = percent))+
   geom_col(colour = "black",width = 0.7)+
   labs(title = "Figure 5.Percentage of COVID-19 Deaths with Pneumonia by Age Group",x = "Age Group", y = "Proportion of COVID Deaths with Pneumonia")
+```
+
+```{r, echo = FALSE}
+ggplotly(f5)
 ```
 
 __Figure 5__ illustrates the percentage of deaths in which both Covid-19 and Pneumonia were present compared to the total number of deaths due to Covid-19. Throughout most age groups, the percentage of deaths in which both Covid-19 and Pneumonia are present account for around 40-50% of the total Covid-19 deaths. It stays relatively consistent throughout the age groups. 

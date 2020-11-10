@@ -1,0 +1,9 @@
+name: "PM 566 Final Project"
+navbar:
+  title: "PM 566 Final"
+  left:
+   - text: "Home"
+     href: index.html
+output: 
+  html_document:
+    theme: cosmo
