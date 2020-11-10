@@ -1,7 +1,10 @@
 ---
 title: "PM 566 Final Assignment"
 author: "Edward Kim"
-output: html_document
+output: 
+  html_document:
+    toc: TRUE
+    toc_float: TRUE
 ---
 
 ```{r, include = FALSE}

@@ -1,7 +1,6 @@
 ---
-title: "PM 566 Midterm Assignment"
+title: "PM 566 Final Assignment"
 author: "Edward Kim"
-date: "10/3/2020"
 output: html_document
 ---
 
@@ -33,7 +32,6 @@ The dataset, __"Provisional COVID-19 Death Count by Sex, Age, and State"__ (http
 data <- GET(
   url = "https://data.cdc.gov",
   path = "/resource/9bhg-hcku.json"
-  
 )
 data <- content(data)
 dat <- as.character(data)
@@ -158,6 +156,11 @@ sum(gender_death$`Covid Death`)
 
 To ensure the accuracy of the data, the number of COVID-19 deaths for each gender was added to determine if it was equal to the total number of Covid-19 deaths reported throughout all genders. 
 
+#### __State__:
+
+```{r}
+state
+```
 ### __Examining the COVID-19 Deaths and Pneumonia Deaths by Age__:
 
 The number of COVID-19 Deaths, Pneumonia Deaths, and deaths involving both Covid-19 and Pneumonia, were all organized by age group. The same age range was included the initial analysis of age group and Covid-19 mortality. Data in which the gender not known, as well as overlapping age categories were excluded from this analysis. The numbers from the resulting analysis may be incomplete due to missing data and lag in the reporting of deaths due to all three conditions. 
