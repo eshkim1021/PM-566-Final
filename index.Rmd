@@ -1,7 +1,6 @@
 ---
-title: "PM 566 Midterm Assignment"
+title: "PM 566 Final Assignment"
 author: "Edward Kim"
-date: "10/3/2020"
 output: html_document
 ---
 
