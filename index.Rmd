@@ -13,19 +13,22 @@ library(httr)
 library(dplyr)
 library(ggplot2)
 library(plotly)
+library(DT)
 ```
 
 
 ## __Introduction__
   
-  The COVID-19 pandemic still heavily impacts the United States, with the US surpassing over 200,000 deaths since cases have first been recorded. To shed further insight into the severity of the panemic, the __"Provisional COVID-19 Death Count by Sex, Age, and State"__ (https://data.cdc.gov/resource/9bhg-hcku.json) data was taken from the __Center for Disease Control__ and analyzed. The data includes the number of COCIVD-19 deaths between February 2020 and August 2020 that was reported to the __National Center for Health Statistics__ by sex and age group. In addition, the number of deaths due in which pneumonia, often caused by severe COVID symptoms,was diagnosed alongside with Covid-19 was also included in the data set. Data gathered by this data set is incomplete due to the length of time in which it takes for a death certificate to be completed and submitted to the NCHS after death. Although location by State was also aviable, only 20 states were represented in this data set, leading to a lack of information to make a proper analysis. 
+  The COVID-19 pandemic still heavily impacts the United States, with the US surpassing over 200,000 deaths since cases have first been recorded. To shed further insight into the severity of the panemic, the __"Provisional COVID-19 Death Count by Sex, Age, and State"__ (https://data.cdc.gov/resource/9bhg-hcku.json) data was taken from the __Center for Disease Control__ and analyzed. The data includes the number of COCIVD-19 deaths between February 2020 and August 2020 that was reported to the __National Center for Health Statistics__ by sex and age group. In addition, the number of deaths due in which pneumonia, often caused by severe COVID symptoms,was diagnosed alongside with Covid-19 was also included in the data set. Data gathered by this data set is incomplete due to the length of time in which it takes for a death certificate to be completed and submitted to the NCHS after death. 
   
   
 The main purpose of this project is to analyze:
 
-1)The effect of __age__ and __gender__ on the COVID-19 mortality rate.
+1)The effect of __age__, __gender__, and __state__ on the COVID-19 mortality rate.
 
 2)The frequency of __pneumonia__ in COVID-19 patients, and its affect on patient mortality. 
+
+<br>
   
 ## __Methods__ 
 
@@ -35,12 +38,14 @@ The dataset, __"Provisional COVID-19 Death Count by Sex, Age, and State"__ (http
 data <- GET(
   url = "https://data.cdc.gov",
   path = "/resource/9bhg-hcku.json"
-  
 )
 data <- content(data)
 dat <- as.character(data)
 ```
 
+```{r, include = FALSE}
+covid_data <- read_csv("covid_death_data.csv")
+```
 
 ```{r Web Scrapping,include = FALSE}
 #
@@ -91,7 +96,8 @@ database %>% count(Gender)
 knitr::kable(database)
 ```
 
-### __Examining Age and Gender__:
+
+### __Examining Age, Gender, and State__:
 
 ```{r,include = FALSE}
 #Group by independent variables. 
@@ -107,6 +113,7 @@ q1 <- q1 %>% mutate(Covid_Deaths = as.numeric(Covid_Deaths))
 
 q1 %>% count(Age_Group)
 ```
+
 
 #### __Age__:
 
@@ -142,6 +149,7 @@ knitr::kable(Age)
 
 To ensure the accuracy of the data cleaning process, the number of Covid-19 deaths per age composition was added to determine if it was equal to the total number of Covid-19 deaths reported across all age groups. 
 
+
 #### __Gender__:
 
 The number of deaths due to COVID-19 was separated by gender. Some observation listed the gender as "All Genders." Because the goal of this project is to determine the influence of gender on COVID-19 mortality, these values were removed. In addition, removing those values would prevent double-counting of the data. Cases where the gender was unknown were also removed. 
@@ -159,6 +167,31 @@ sum(gender_death$`Covid Death`)
 ```
 
 To ensure the accuracy of the data, the number of COVID-19 deaths for each gender was added to determine if it was equal to the total number of Covid-19 deaths reported throughout all genders. 
+
+
+#### __State__:
+
+The number of deaths due to Covid-19 was separated by state. In the original dataset, New York City was listed as a separate category than the state of New York due to the large amount of Covid-19 cases centralized in that area. The number of covid-19 cases in New York City was added to the state totals. US Territories such as Puerto Rico was also included in the original dataset. However, because the focus of this dataset is on individual states, the data for Puerto Rico was excluded. 
+
+```{r examine state, include = FALSE}
+state_count <- covid_data %>% 
+  filter(!(State %in% "United States")) %>%
+  filter((Sex %in% "All Sexes"))%>%
+  filter((`Age group` %in% "All Ages"))%>%
+  group_by(State) %>%
+  select(State,`COVID-19 Deaths`)
+
+state_count <-state_count %>% 
+  filter(!(State %in% "Puerto Rico"))
+
+ny <- state_count[33, ]
+nyc <- state_count[34, ]
+
+state_count[33,2] <- ny$`COVID-19 Deaths`+nyc$`COVID-19 Deaths`
+
+state_count <- state_count[-c(34),]
+```
+<br>
 
 ### __Examining the COVID-19 Deaths and Pneumonia Deaths by Age__:
 
@@ -207,7 +240,11 @@ q2 <- q2[c(5,1:4,6:8),]
 
 All of the preliminary tables and figures were made through knitrr and ggplot2. 
 
+<br>
+
 ## __Preliminary Results__: 
+
+### __Age__
 
 The following table and figure analyze the relationship between age group and Covid-19 death: 
 
@@ -216,6 +253,8 @@ knitr::kable(Age)
 ```
 
 The table above lists the number of Covid-19 deaths for each age group in the United States from February to August 2020. The numbers range from 35 deaths, for those between 5-14 years old, to 52,617 deaths, for those in between 75-84 years old.
+
+<br>
 
 ```{r Create Figure for Age and COVID-19 Death,include = FALSE}
 f1 <-Age %>% 
@@ -235,13 +274,19 @@ __Figure 1__ illustrates the number of Covid-19 deaths by age group in the Unite
 
 According to __Figure 1__, the number of deaths due to Covid-19 increased for every age group. The older the patient, the greater the Covid-19 mortality rate. The increase in the number of deaths was particular pronounced after the age of 55, as the number of deaths seems to increase exponentially for each increase in age group. 
 
+<br>
 
-The following table shows the difference in Covid-19 deaths by gender in the United States from February 2020 to August 2020. The number of deaths 
+### __Gender__
+
+The following table shows the difference in Covid-19 deaths by gender in the United States from February 2020 to August 2020. 
+
 ```{r, echo = FALSE}
 knitr::kable(gender_death)
 ```
 
 The number of males that have died due to Covid-19 is 114,291, while the number of females that have died due to Covid-19 is 75,203. These numbers are different from the total number of Covid-19 deaths calculated from the Covid-19 due to age distribution because different observations were omitted depending on the unknown or repetitive variables for each category. 
+
+<br>
 
 ```{r, Gender and COVID-19, include = FALSE}
 f2 <- gender_death %>% 
@@ -256,6 +301,8 @@ ggplotly(f2)
 ```
 
 __Figure 2__ illustrates the difference in the number of Covid-19 deaths in the United States by gender from February to August 2020. The cases in which the gender was unknown were removed from this figure. According to the data, there have been more cases of males dying due to Covid-19 than females. The ratio of males to females that have died due to COVID-19 is 1.520, indicating that the number of males that have died from Covid-19 is 1.520 times greater than the number of females that have died. 
+
+<br>
 
 
 ```{r Figure of Covid-19 Death by Age and Gender, include = FALSE}
@@ -273,7 +320,58 @@ f3 <-q1 %>%
 ggplotly(f3)
 ```
 
-__Figure 3__ illustrates the number of Covid-19 deaths by age group and gender in the United States from February to August 2020. The gender distribution of the number of Covid-19 deaths for each age group mirrors that of the overall population of the United States. In each age group, the number of male deaths from Covid-19 are greater than that of females. 
+__Figure 3__ illustrates the number of Covid-19 deaths by age group and gender in the United States from February to August 2020. The gender distribution of the number of Covid-19 deaths for each age group mirrors that of the overall population of the United States. In each age group, the number of male deaths from Covid-19 are greater than that of females. 4
+
+<br> 
+
+### __State__
+
+The following interactive table shows the number of deaths from Covid-19 for each state and the District of Columbia. The state of New York had a most deaths due to Covid-19 from February to August 2020, largely in part due to the large number of cases in New York City. The state of Wyoming had the least reported Covid-19 deaths during this time period. It is important to note, however, that this dataset does not included the population of each state, which can act as a counfounding factor for the number of deaths due to Covid-19. 
+
+<br>
+
+```{r, echo = FALSE}
+datatable(state_count)
+```
+<br>
+
+The following map shows the number of Covid-19 deaths for each state. Again, the number of Covid-19 deaths by state is the highest in New York. In general, the highest number of cases were concentrated around the New England area, Florida, Texas, and California. Many Midwestern states did not have many deaths due to Covid-19. As previously mentioned, differences in population, however, could effect the amount of covid-19 per state. 
+
+```{r, include = FALSE}
+state_count$state <- state_count$State
+
+st_crosswalk <- tibble(state = state.name) %>%
+   bind_cols(tibble(abb = state.abb)) %>% 
+   bind_rows(tibble(state = "District of Columbia", abb = "DC"))
+state_count <- left_join(state_count,st_crosswalk, by = "state")
+state_count$hover <- with(state_count, paste(state, '<br>', "Deaths: ",`COVID-19 Deaths`))
+
+set_map_details <- list(
+  scope = 'usa',
+  projection = list(type = 'albers usa'),
+  showlakes = TRUE,
+  lakecolor = toRGB('white')
+)
+
+map <- plot_geo(state_count, locationmode = 'USA-states') %>%
+  add_trace(
+    z = ~`COVID-19 Deaths`, text = ~hover, locations = ~abb,
+    color = ~`COVID-19 Deaths`, colorscale = 'magma'
+  )
+
+map <- map %>% colorbar(title = "Covid-19 Deaths by State")
+map <- map %>% layout(
+  title = paste('Covid-19 Death by State, from February 2020 to August 2020', '<br>(Hover for Value)'),
+  geo = set_map_details)
+```
+
+```{r, echo = FALSE}
+map
+```
+
+<br>
+
+### __COVID-19 Deaths and Pneumonia Deaths by Age__
 
 The following table shows the number of deaths for each condition (Covid-19, Pneumonia, Covid and Pneumonia) by age group. 
 
@@ -282,6 +380,8 @@ knitr::kable(q2)
 ```
 
 The number of deaths for each condition increased as the individual gets older, which is expected. The number of Covid deaths recorded does not include the number of deaths where both Covid-19 and pneumonia are found. 
+
+<br>
 
 ```{r Figure of Age with Pnemonia and COVID Death, include = FALSE}
 f4 <-q2 %>% 
@@ -297,6 +397,8 @@ ggplotly(f4)
 
 
 __Figure 4__ illustrates the number of deaths in which both Covid-19 and Pneumonia were involved. The number of cases with Covid-19 and pneumonia increase with age, and reaches the highest values at those between 75-84 years of age. 
+
+<br>
 
 ```{r Figure of Proportoinal Deaths by Covid-19, include = FALSE}
 q2 <- q2 %>% mutate(percent = Covid_and_Pneumonia_Deaths/(Covid_Deaths+Covid_and_Pneumonia_Deaths)*100)
@@ -314,6 +416,8 @@ ggplotly(f5)
 
 __Figure 5__ illustrates the percentage of deaths in which both Covid-19 and Pneumonia were present compared to the total number of deaths due to Covid-19. Throughout most age groups, the percentage of deaths in which both Covid-19 and Pneumonia are present account for around 40-50% of the total Covid-19 deaths. It stays relatively consistent throughout the age groups. 
 
+<br>
+
 ## __Conclusion__: 
 
-In conclusion, the number of deaths due to Covid-19 is influenced by age and gender. It was found that the number of deaths due to Covid-19 increase with age, with there being the most deaths from individuals in between the ages of 75-84. There was a greater number of Covid-19 deaths in males than females. Also, pneumonia was prsent in around 50% of the deaths due to Covid-19, with that percentage staying relatively similar throughout all the age groups. Although pneumonia is found in around half of Covid-19 cases, there is not enough information in this data set to determine if a co-diagnosis of pneumonia lead to an increase in mortality rate from Covid-19. 
+In conclusion, the number of deaths due to Covid-19 is influenced by age and gender. It was found that the number of deaths due to Covid-19 increase with age, with there being the most deaths from individuals in between the ages of 75-84. There was a greater number of Covid-19 deaths in males than females. In addition, it was determined that a majority of the deaths due to Covid-19 were in states with large populations, such as New York and California. Also, pneumonia was prsent in around 50% of the deaths due to Covid-19, with that percentage staying relatively similar throughout all the age groups. Although pneumonia is found in around half of Covid-19 cases, there is not enough information in this data set to determine if a co-diagnosis of pneumonia lead to an increase in mortality rate from Covid-19. 
