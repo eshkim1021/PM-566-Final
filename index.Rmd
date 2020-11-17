@@ -97,8 +97,6 @@ knitr::kable(database)
 ```
 
 
-### __Examining Age, Gender, and State__:
-
 ```{r,include = FALSE}
 #Group by independent variables. 
 q1 <- data.frame(
@@ -114,12 +112,6 @@ q1 <- q1 %>% mutate(Covid_Deaths = as.numeric(Covid_Deaths))
 q1 %>% count(Age_Group)
 ```
 
-
-#### __Age__:
-
-The age variable was separated into different age groups, including ranges from 0-17, 15-24, 18-29, etc. When the age group was extracted from the raw data, there were observations that did not include data regarding the age. Therefore, those observations were removed. 
-
-In addition, there were also overlapping age-ranges in the data set. To prevent double-counting of deaths, the overlapping age-ranges were removed. The final age groups started from age 5 to age 84, broken down into increments of 10 years (5-14,15-24,26-35, etc.)
 
 ```{r Create Table for Age and COVID-19 Death,message = FALSE,include = FALSE}
 q1 <- q1 %>% 
@@ -147,12 +139,6 @@ knitr::kable(Age)
 ```
 
 
-To ensure the accuracy of the data cleaning process, the number of Covid-19 deaths per age composition was added to determine if it was equal to the total number of Covid-19 deaths reported across all age groups. 
-
-
-#### __Gender__:
-
-The number of deaths due to COVID-19 was separated by gender. Some observation listed the gender as "All Genders." Because the goal of this project is to determine the influence of gender on COVID-19 mortality, these values were removed. In addition, removing those values would prevent double-counting of the data. Cases where the gender was unknown were also removed. 
 
 ```{r Create Table for Gender and COVID-19 Death,include = FALSE}
 q1 <- q1 %>%
@@ -166,12 +152,6 @@ gender_death <- q1 %>%
 sum(gender_death$`Covid Death`)
 ```
 
-To ensure the accuracy of the data, the number of COVID-19 deaths for each gender was added to determine if it was equal to the total number of Covid-19 deaths reported throughout all genders. 
-
-
-#### __State__:
-
-The number of deaths due to Covid-19 was separated by state. In the original dataset, New York City was listed as a separate category than the state of New York due to the large amount of Covid-19 cases centralized in that area. The number of covid-19 cases in New York City was added to the state totals. US Territories such as Puerto Rico was also included in the original dataset. However, because the focus of this dataset is on individual states, the data for Puerto Rico was excluded. 
 
 ```{r examine state, include = FALSE}
 state_count <- covid_data %>% 
@@ -192,10 +172,6 @@ state_count[33,2] <- ny$`COVID-19 Deaths`+nyc$`COVID-19 Deaths`
 state_count <- state_count[-c(34),]
 ```
 <br>
-
-### __Examining the COVID-19 Deaths and Pneumonia Deaths by Age__:
-
-The number of COVID-19 Deaths, Pneumonia Deaths, and deaths involving both Covid-19 and Pneumonia, were all organized by age group. The same age range was included the initial analysis of age group and Covid-19 mortality. Data in which the gender not known, as well as overlapping age categories were excluded from this analysis. The numbers from the resulting analysis may be incomplete due to missing data and lag in the reporting of deaths due to all three conditions. 
 
 
 
@@ -238,21 +214,12 @@ q2 <- q2[c(5,1:4,6:8),]
 ```
 
 
-All of the preliminary tables and figures were made through knitrr and ggplot2. 
-
-<br>
-
-## __Preliminary Results__: 
+## __Results__: 
 
 ### __Age__
 
-The following table and figure analyze the relationship between age group and Covid-19 death: 
+The following figure analyzes the relationship between age group and Covid-19 death: 
 
-```{r Table for Age and COVID-19 Death,echo = FALSE}
-knitr::kable(Age)  
-```
-
-The table above lists the number of Covid-19 deaths for each age group in the United States from February to August 2020. The numbers range from 35 deaths, for those between 5-14 years old, to 52,617 deaths, for those in between 75-84 years old.
 
 <br>
 
@@ -278,13 +245,7 @@ According to __Figure 1__, the number of deaths due to Covid-19 increased for ev
 
 ### __Gender__
 
-The following table shows the difference in Covid-19 deaths by gender in the United States from February 2020 to August 2020. 
-
-```{r, echo = FALSE}
-knitr::kable(gender_death)
-```
-
-The number of males that have died due to Covid-19 is 114,291, while the number of females that have died due to Covid-19 is 75,203. These numbers are different from the total number of Covid-19 deaths calculated from the Covid-19 due to age distribution because different observations were omitted depending on the unknown or repetitive variables for each category. 
+The following figure shows the number of Covid-19 deaths by gender.
 
 <br>
 
@@ -326,14 +287,6 @@ __Figure 3__ illustrates the number of Covid-19 deaths by age group and gender i
 
 ### __State__
 
-The following interactive table shows the number of deaths from Covid-19 for each state and the District of Columbia. The state of New York had a most deaths due to Covid-19 from February to August 2020, largely in part due to the large number of cases in New York City. The state of Wyoming had the least reported Covid-19 deaths during this time period. It is important to note, however, that this dataset does not included the population of each state, which can act as a counfounding factor for the number of deaths due to Covid-19. 
-
-<br>
-
-```{r, echo = FALSE}
-datatable(state_count)
-```
-<br>
 
 The following map shows the number of Covid-19 deaths for each state. Again, the number of Covid-19 deaths by state is the highest in New York. In general, the highest number of cases were concentrated around the New England area, Florida, Texas, and California. Many Midwestern states did not have many deaths due to Covid-19. As previously mentioned, differences in population, however, could effect the amount of covid-19 per state. 
 
@@ -365,38 +318,13 @@ map <- map %>% layout(
   geo = set_map_details)
 ```
 
-```{r, echo = FALSE}
+```{r, echo = FALSE, fig.width = 10.0}
 map
 ```
 
 <br>
 
 ### __COVID-19 Deaths and Pneumonia Deaths by Age__
-
-The following table shows the number of deaths for each condition (Covid-19, Pneumonia, Covid and Pneumonia) by age group. 
-
-```{r Table for Q2, echo = FALSE}
-knitr::kable(q2)
-```
-
-The number of deaths for each condition increased as the individual gets older, which is expected. The number of Covid deaths recorded does not include the number of deaths where both Covid-19 and pneumonia are found. 
-
-<br>
-
-```{r Figure of Age with Pnemonia and COVID Death, include = FALSE}
-f4 <-q2 %>% 
-  filter(!(Age_Group %in% "5-14 years")) %>% 
-  ggplot(mapping = aes(x = Age_Group, y = Covid_and_Pneumonia_Deaths))+
-  geom_col(color = "black")+
-  labs(title = "Figure 4.Number of Deaths with Pneumonia and COVID-19", x = "Age Group", y = "Number of Covid-19 Deaths with Pneumonia")
-```
-
-```{r, echo = FALSE}
-ggplotly(f4)
-```
-
-
-__Figure 4__ illustrates the number of deaths in which both Covid-19 and Pneumonia were involved. The number of cases with Covid-19 and pneumonia increase with age, and reaches the highest values at those between 75-84 years of age. 
 
 <br>
 
@@ -414,7 +342,7 @@ f5 <- q2 %>%
 ggplotly(f5)
 ```
 
-__Figure 5__ illustrates the percentage of deaths in which both Covid-19 and Pneumonia were present compared to the total number of deaths due to Covid-19. Throughout most age groups, the percentage of deaths in which both Covid-19 and Pneumonia are present account for around 40-50% of the total Covid-19 deaths. It stays relatively consistent throughout the age groups. 
+__Figure 4__ illustrates the percentage of deaths in which both Covid-19 and Pneumonia were present compared to the total number of deaths due to Covid-19. Throughout most age groups, the percentage of deaths in which both Covid-19 and Pneumonia are present account for around 40-50% of the total Covid-19 deaths. It stays relatively consistent throughout the age groups. 
 
 <br>
 

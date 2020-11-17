@@ -1,10 +1,11 @@
 ---
-title: "PM 566 Final Assignment"
-author: "Edward Kim"
-output: 
+title: "Additional Figures"
+output:
   html_document:
-    toc: TRUE
-    toc_float: TRUE
+    toc: yes
+    toc_float: yes
+  pdf_document:
+    toc: yes
 ---
 
 ```{r, include = FALSE}
@@ -16,23 +17,6 @@ library(plotly)
 library(DT)
 ```
 
-
-## __Introduction__
-  
-  The COVID-19 pandemic still heavily impacts the United States, with the US surpassing over 200,000 deaths since cases have first been recorded. To shed further insight into the severity of the panemic, the __"Provisional COVID-19 Death Count by Sex, Age, and State"__ (https://data.cdc.gov/resource/9bhg-hcku.json) data was taken from the __Center for Disease Control__ and analyzed. The data includes the number of COCIVD-19 deaths between February 2020 and August 2020 that was reported to the __National Center for Health Statistics__ by sex and age group. In addition, the number of deaths due in which pneumonia, often caused by severe COVID symptoms,was diagnosed alongside with Covid-19 was also included in the data set. Data gathered by this data set is incomplete due to the length of time in which it takes for a death certificate to be completed and submitted to the NCHS after death. 
-  
-  
-The main purpose of this project is to analyze:
-
-1)The effect of __age__, __gender__, and __state__ on the COVID-19 mortality rate.
-
-2)The frequency of __pneumonia__ in COVID-19 patients, and its affect on patient mortality. 
-
-<br>
-  
-## __Methods__ 
-
-The dataset, __"Provisional COVID-19 Death Count by Sex, Age, and State"__ (https://data.cdc.gov/resource/9bhg-hcku.json), was accessed from the __Center for Disease Control__ website through an API. Once downloaded, the desired information was extracted through regular expressions and formed into a data table. The key independent variables that were examined in this study were __age__ and __gender__ while the data of interest included number of __deaths from COVID-19__, number of __deaths from pneumonia__, and the number of deaths which both __COVID-19 and pneumonia__ were involved. 
 
 ```{r Obtain API, include = FALSE}
 data <- GET(
@@ -97,7 +81,6 @@ knitr::kable(database)
 ```
 
 
-### __Examining Age, Gender, and State__:
 
 ```{r,include = FALSE}
 #Group by independent variables. 
@@ -115,11 +98,6 @@ q1 %>% count(Age_Group)
 ```
 
 
-#### __Age__:
-
-The age variable was separated into different age groups, including ranges from 0-17, 15-24, 18-29, etc. When the age group was extracted from the raw data, there were observations that did not include data regarding the age. Therefore, those observations were removed. 
-
-In addition, there were also overlapping age-ranges in the data set. To prevent double-counting of deaths, the overlapping age-ranges were removed. The final age groups started from age 5 to age 84, broken down into increments of 10 years (5-14,15-24,26-35, etc.)
 
 ```{r Create Table for Age and COVID-19 Death,message = FALSE,include = FALSE}
 q1 <- q1 %>% 
@@ -147,12 +125,6 @@ knitr::kable(Age)
 ```
 
 
-To ensure the accuracy of the data cleaning process, the number of Covid-19 deaths per age composition was added to determine if it was equal to the total number of Covid-19 deaths reported across all age groups. 
-
-
-#### __Gender__:
-
-The number of deaths due to COVID-19 was separated by gender. Some observation listed the gender as "All Genders." Because the goal of this project is to determine the influence of gender on COVID-19 mortality, these values were removed. In addition, removing those values would prevent double-counting of the data. Cases where the gender was unknown were also removed. 
 
 ```{r Create Table for Gender and COVID-19 Death,include = FALSE}
 q1 <- q1 %>%
@@ -166,12 +138,7 @@ gender_death <- q1 %>%
 sum(gender_death$`Covid Death`)
 ```
 
-To ensure the accuracy of the data, the number of COVID-19 deaths for each gender was added to determine if it was equal to the total number of Covid-19 deaths reported throughout all genders. 
 
-
-#### __State__:
-
-The number of deaths due to Covid-19 was separated by state. In the original dataset, New York City was listed as a separate category than the state of New York due to the large amount of Covid-19 cases centralized in that area. The number of covid-19 cases in New York City was added to the state totals. US Territories such as Puerto Rico was also included in the original dataset. However, because the focus of this dataset is on individual states, the data for Puerto Rico was excluded. 
 
 ```{r examine state, include = FALSE}
 state_count <- covid_data %>% 
@@ -192,10 +159,6 @@ state_count[33,2] <- ny$`COVID-19 Deaths`+nyc$`COVID-19 Deaths`
 state_count <- state_count[-c(34),]
 ```
 <br>
-
-### __Examining the COVID-19 Deaths and Pneumonia Deaths by Age__:
-
-The number of COVID-19 Deaths, Pneumonia Deaths, and deaths involving both Covid-19 and Pneumonia, were all organized by age group. The same age range was included the initial analysis of age group and Covid-19 mortality. Data in which the gender not known, as well as overlapping age categories were excluded from this analysis. The numbers from the resulting analysis may be incomplete due to missing data and lag in the reporting of deaths due to all three conditions. 
 
 
 
@@ -237,12 +200,6 @@ q2 <- merge(q2,q2c, by = "Age_Group")
 q2 <- q2[c(5,1:4,6:8),]
 ```
 
-
-All of the preliminary tables and figures were made through knitrr and ggplot2. 
-
-<br>
-
-## __Preliminary Results__: 
 
 ### __Age__
 
@@ -365,7 +322,7 @@ map <- map %>% layout(
   geo = set_map_details)
 ```
 
-```{r, echo = FALSE}
+```{r, echo = FALSE, fig.width = 10}
 map
 ```
 
@@ -415,9 +372,3 @@ ggplotly(f5)
 ```
 
 __Figure 5__ illustrates the percentage of deaths in which both Covid-19 and Pneumonia were present compared to the total number of deaths due to Covid-19. Throughout most age groups, the percentage of deaths in which both Covid-19 and Pneumonia are present account for around 40-50% of the total Covid-19 deaths. It stays relatively consistent throughout the age groups. 
-
-<br>
-
-## __Conclusion__: 
-
-In conclusion, the number of deaths due to Covid-19 is influenced by age and gender. It was found that the number of deaths due to Covid-19 increase with age, with there being the most deaths from individuals in between the ages of 75-84. There was a greater number of Covid-19 deaths in males than females. In addition, it was determined that a majority of the deaths due to Covid-19 were in states with large populations, such as New York and California. Also, pneumonia was prsent in around 50% of the deaths due to Covid-19, with that percentage staying relatively similar throughout all the age groups. Although pneumonia is found in around half of Covid-19 cases, there is not enough information in this data set to determine if a co-diagnosis of pneumonia lead to an increase in mortality rate from Covid-19. 
