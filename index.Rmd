@@ -1,5 +1,5 @@
 ---
-title: "PM 566 Final Assignment"
+title: "Exploratory Analysis of Covid-19 Death in the United States"
 author: "Edward Kim"
 output: 
   html_document:
@@ -19,20 +19,24 @@ library(DT)
 
 ## __Introduction__
   
-  The COVID-19 pandemic still heavily impacts the United States, with the US surpassing over 200,000 deaths since cases have first been recorded. To shed further insight into the severity of the panemic, the __"Provisional COVID-19 Death Count by Sex, Age, and State"__ (https://data.cdc.gov/resource/9bhg-hcku.json) data was taken from the __Center for Disease Control__ and analyzed. The data includes the number of COCIVD-19 deaths between February 2020 and August 2020 that was reported to the __National Center for Health Statistics__ by sex and age group. In addition, the number of deaths due in which pneumonia, often caused by severe COVID symptoms,was diagnosed alongside with Covid-19 was also included in the data set. Data gathered by this data set is incomplete due to the length of time in which it takes for a death certificate to be completed and submitted to the NCHS after death. 
+  The COVID-19 pandemic still heavily impacts the United States, with the US surpassing over 200,000 deaths since cases have first been recorded. As of November 16th, when this report was written, the number of Covid-19 cases and deaths have risen drastically throughout the United States. To shed further insight into the severity of the pandemic, the __"Provisional COVID-19 Death Count by Sex, Age, and State"__ (https://data.cdc.gov/resource/9bhg-hcku.json) data was taken from the __Center for Disease Control__ and analyzed. The data includes the number of COVID-19 deaths between February 2020 and August 2020 that was reported to the __National Center for Health Statistics__ by sex and age group. In addition, the number of deaths due in which pneumonia, often caused by severe COVID symptoms,was diagnosed alongside with Covid-19 was also included in the data set. Data gathered by this data set is incomplete due to the length of time in which it takes for a death certificate to be completed and submitted to the NCHS after death. Furthermore, the number of Covid-19 deaths listed in this report does not accurately reflect the current state of the pandemic as the dataset only included Covid-19 data from February 2020 and August 2020.
   
   
-The main purpose of this project is to analyze:
+  In the __"Provisional COVID-19 Death Count by Sex, Age, and State"__, the number of Covid-19 deaths reported by state was recorded without standardization for each state. Therefore, the effect of population density of each state on the number of Covid-19 deaths from that state was also included in the analysis as a possible confounding factor or effect modifier. The data on population density was taken from the __"2010 Census: Population Density Data"__ reported by the __United States Census Bureau__. The data set lists the population density by peopler per square mile for each state. However, as the data was from 2010 there may have been shifts in the population density since then.
+  
+The main purpose of the report is to: 
 
-1)The effect of __age__, __gender__, and __state__ on the COVID-19 mortality rate.
+1)Explore and analyze the relationship between __age__ and __state__ on the number of __Covid-19 Deaths__
 
-2)The frequency of __pneumonia__ in COVID-19 patients, and its affect on patient mortality. 
+2)Explore the frequency of __pneumonia__ in Covid-19 Patients, and it's affect on patient mortality 
 
 <br>
   
 ## __Methods__ 
 
 The dataset, __"Provisional COVID-19 Death Count by Sex, Age, and State"__ (https://data.cdc.gov/resource/9bhg-hcku.json), was accessed from the __Center for Disease Control__ website through an API. Once downloaded, the desired information was extracted through regular expressions and formed into a data table. The key independent variables that were examined in this study were __age__ and __gender__ while the data of interest included number of __deaths from COVID-19__, number of __deaths from pneumonia__, and the number of deaths which both __COVID-19 and pneumonia__ were involved. 
+
+Data on the population density for each state was taken from the __"2010 Census: Population Density Data"__ reported by the __United States Census Bureau__. The data was download from the US Census Bureau using a CSV file for analysis. The purpose of this data set was to adjust as a potential confounding factor for the relationship between the location by state and number of deaths due to Covid-19
 
 ```{r Obtain API, include = FALSE}
 data <- GET(
@@ -45,6 +49,7 @@ dat <- as.character(data)
 
 ```{r, include = FALSE}
 covid_data <- read_csv("covid_death_data.csv")
+pop <- read_csv("pop_density (1).csv")
 ```
 
 ```{r Web Scrapping,include = FALSE}
@@ -170,6 +175,23 @@ nyc <- state_count[34, ]
 state_count[33,2] <- ny$`COVID-19 Deaths`+nyc$`COVID-19 Deaths`
 
 state_count <- state_count[-c(34),]
+
+pop <- pop %>% mutate(state = STATE_OR_REGION)
+pop <- pop %>% mutate(density = `2010_DENSITY`)
+
+pop_final <- pop %>% dplyr::select(state,density)
+
+pop_final <- pop_final %>% 
+  filter(!(state %in% "United States")) %>%
+  filter(!(state %in% "Puerto Rico"))
+
+state_count <- merge(
+  x = state_count,
+  y = pop_final,
+  by.x = c("State"),
+  by.y = c("state")
+)
+
 ```
 <br>
 
@@ -228,7 +250,7 @@ f1 <-Age %>%
   filter(!(Age_Group %in% "5-14 years")) %>%
   ggplot(mapping = aes(x = Age_Group, y = Covid_Deaths))+
   geom_col()+
-  labs(title = "Figure 1. Number of COVID-19 Deaths by Age Group in the United States,
+  labs(title = "Number of COVID-19 Deaths by Age Group in the United States,
 February 2020 to August 2020")
 ```
 
@@ -245,24 +267,6 @@ According to __Figure 1__, the number of deaths due to Covid-19 increased for ev
 
 ### __Gender__
 
-The following figure shows the number of Covid-19 deaths by gender.
-
-<br>
-
-```{r, Gender and COVID-19, include = FALSE}
-f2 <- gender_death %>% 
-  ggplot(mapping = aes(x = Gender, y = `Covid Death`))+
-  geom_col(width = 0.3)+
-  labs(title = "Figure 2. Number of COVID-19 Deaths by Gender in the United States,
-February to August 2020")
-```
-
-```{r, echo = FALSE}
-ggplotly(f2)
-```
-
-__Figure 2__ illustrates the difference in the number of Covid-19 deaths in the United States by gender from February to August 2020. The cases in which the gender was unknown were removed from this figure. According to the data, there have been more cases of males dying due to Covid-19 than females. The ratio of males to females that have died due to COVID-19 is 1.520, indicating that the number of males that have died from Covid-19 is 1.520 times greater than the number of females that have died. 
-
 <br>
 
 
@@ -274,14 +278,14 @@ f3 <-q1 %>%
   filter(!(Gender %in% "Unknown"))%>%
   ggplot(mapping = aes(x = Age_Group, y = Covid_Deaths, fill = Gender))+
   geom_col(position = "dodge",colour = "black")+
-  labs(title = "Figure 3.COVID-19 Deaths in the United States by Age Group and Gender", x = "Age Group", y = "Number of Covid-19 Deaths")
+  labs(title = "COVID-19 Deaths in the United States by Age Group and Gender", x = "Age Group", y = "Number of Covid-19 Deaths")
 ```
 
 ```{r, echo = FALSE, width = 1.5}
 ggplotly(f3)
 ```
 
-__Figure 3__ illustrates the number of Covid-19 deaths by age group and gender in the United States from February to August 2020. The gender distribution of the number of Covid-19 deaths for each age group mirrors that of the overall population of the United States. In each age group, the number of male deaths from Covid-19 are greater than that of females. 4
+__Figure 2__ illustrates the number of Covid-19 deaths by age group and gender in the United States from February to August 2020. The gender distribution of the number of Covid-19 deaths for each age group mirrors that of the overall population of the United States. In each age group, the number of male deaths from Covid-19 are greater than that of females. 4
 
 <br> 
 
@@ -324,6 +328,34 @@ map
 
 <br>
 
+The following interactive scatter plot illustrates the relationship between state population density and the number of deaths due to Covid-19. We can find that in general states with higher population density hae a larger number of deaths due to Covid-19. Notable outliers include New York and Rhode Island. New York as a high number of deaths due to Covid-19 based on its population density and Rhode Island has a lower number of deaths relative to its population density.
+
+```{r density and state, include = FALSE}
+scatter_plot <- state_count %>% 
+  filter(!(abb %in% "DC"))
+
+scatter <- scatter_plot %>% 
+  plot_ly(x = ~density,y=~`COVID-19 Deaths`,
+          type = 'scatter',
+          mode = 'markers',
+          color = ~`State`,
+          size = ~density,
+          sizes = c(5,70),
+          marker = list(sizemode = 'diamter', opacity = 0.5),
+          hoverinfo = 'text',
+          text = ~paste( paste(state, ":", sep = ""),
+                         paste("Population Density(per sq. mile): ",density, sep = ""),
+                         paste("Deaths Due To Covid-19: ",`COVID-19 Deaths`, sep = ""),
+                         sep = "<br>")) %>% 
+  layout(title = "Number of Deaths from Covid-19 by State Population Density",
+         yaxis = list(title = "Deaths due to Covid-19"),xaxis = list(title = "State Population Density(per sq. mile)"), hovermode = "compare")
+
+```
+
+```{r interactive scatter, echo = FALSE, warning = FALSE}
+scatter
+```
+
 ### __COVID-19 Deaths and Pneumonia Deaths by Age__
 
 <br>
@@ -335,17 +367,17 @@ f5 <- q2 %>%
   filter(!(Covid_and_Pneumonia_Deaths %in% NA))%>%
   ggplot(mapping = aes(x = Age_Group,y = percent))+
   geom_col(colour = "black",width = 0.7)+
-  labs(title = "Figure 5.Percentage of COVID-19 Deaths with Pneumonia by Age Group",x = "Age Group", y = "Proportion of COVID Deaths with Pneumonia")
+  labs(title = "Percentage of COVID-19 Deaths with Pneumonia by Age Group",x = "Age Group", y = "Proportion of COVID Deaths with Pneumonia")
 ```
 
 ```{r, echo = FALSE}
 ggplotly(f5)
 ```
 
-__Figure 4__ illustrates the percentage of deaths in which both Covid-19 and Pneumonia were present compared to the total number of deaths due to Covid-19. Throughout most age groups, the percentage of deaths in which both Covid-19 and Pneumonia are present account for around 40-50% of the total Covid-19 deaths. It stays relatively consistent throughout the age groups. 
+__Figure 5__ illustrates the percentage of deaths in which both Covid-19 and Pneumonia were present compared to the total number of deaths due to Covid-19. Throughout most age groups, the percentage of deaths in which both Covid-19 and Pneumonia are present account for around 40-50% of the total Covid-19 deaths. It stays relatively consistent throughout the age groups. 
 
 <br>
 
 ## __Conclusion__: 
 
-In conclusion, the number of deaths due to Covid-19 is influenced by age and gender. It was found that the number of deaths due to Covid-19 increase with age, with there being the most deaths from individuals in between the ages of 75-84. There was a greater number of Covid-19 deaths in males than females. In addition, it was determined that a majority of the deaths due to Covid-19 were in states with large populations, such as New York and California. Also, pneumonia was prsent in around 50% of the deaths due to Covid-19, with that percentage staying relatively similar throughout all the age groups. Although pneumonia is found in around half of Covid-19 cases, there is not enough information in this data set to determine if a co-diagnosis of pneumonia lead to an increase in mortality rate from Covid-19. 
+  In conclusion, the number of deaths due to Covid-19 is influenced by age and gender. It was found that the number of deaths due to Covid-19 increase with age, with there being the most deaths from individuals in between the ages of 75-84. There was a greater number of Covid-19 deaths in males than females. In addition, it was determined that a majority of the deaths due to Covid-19 were in states with large populations, such as New York and California. When examining the number of deaths by population density, it was found that states like New Jersey, New York, California, and Florida has a higher number of deaths compared to its population density. Also, pneumonia was prsent in around 50% of the deaths due to Covid-19, with that percentage staying relatively similar throughout all the age groups. Although pneumonia is found in around half of Covid-19 cases, there is not enough information in this data set to determine if a co-diagnosis of pneumonia lead to an increase in mortality rate from Covid-19. 

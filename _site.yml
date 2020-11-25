@@ -1,16 +1,14 @@
-name: "PM 566 Final Project"
+name: "Exploratory Analysis of Covid-19 Death in the US"
 navbar:
-  title: "PM 566 Final Project"
+  title: "Exploratory Analysis of Covid-19 Death in the US"
   left:
    - text: "Home"
      href: index.html
    - text: "Raw Data"
      href: https://data.cdc.gov/NCHS/Provisional-COVID-19-Death-Counts-by-Sex-Age-and-S/9bhg-hcku
-   - text: "Additional Figures"
-     href: 
   right:
    - text: "Full Report PDF"
-     href: PM-566-Final.pdf
+     href: Final.pdf
    - text: "Additional Figures"
      href: README.html
 output: 
